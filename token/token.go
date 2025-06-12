@@ -36,7 +36,7 @@ const (
 )
 
 var keywords = map[string]TokenType{
-	"fun": FUNCTION,
+	"fn":  FUNCTION,
 	"let": LET,
 }
 

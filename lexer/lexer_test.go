@@ -22,6 +22,7 @@ let result = add(five, ten);`
 		{token.IDENTIFIER, "five"},
 		{token.ASSIGN, "="},
 		{token.INT, "5"},
+		{token.SEMICOLON, ";"},
 		{token.LET, "let"},
 		{token.IDENTIFIER, "ten"},
 		{token.ASSIGN, "="},
@@ -58,6 +59,7 @@ let result = add(five, ten);`
 	l := New(input)
 	for i, tt := range tests {
 		tok := l.NextToken()
+		//fmt.Println(tok.Literal, " ", tok.Type)
 
 		if tok.Type != tt.expectedType {
 			t.Fatalf("tests[%d] - tokentype wrong. expected=%q, got=%q", i, tt.expectedType, tok.Type)
