@@ -29,8 +29,30 @@ func new_token(tokenType token.TokenType, ch byte) token.Token {
 	return token.Token{Type: tokenType, Literal: string(ch)}
 }
 
+// _ is considered letter
+func is_letter(ch byte) bool {
+	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
+}
+
+func (l *Lexer) skip_witespace() {
+	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
+		l.read_char()
+	}
+}
+
+func (l *Lexer) read_identifier() string {
+	position := l.position
+	for is_letter(l.ch) {
+		l.read_char()
+	}
+	return l.input[position:l.position]
+}
+
 func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
+
+	l.skip_witespace()
+
 	switch l.ch {
 	case '=':
 		tok = new_token(token.ASSIGN, l.ch)
@@ -51,6 +73,14 @@ func (l *Lexer) NextToken() token.Token {
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.EOF
+	default:
+		if is_letter(l.ch) {
+			tok.Literal = l.read_identifier() // Need to exit early, because read_identifier() called l.read_char()
+			tok.Type = token.LookupIdentifier(tok.Literal)
+			return tok
+		} else {
+			tok = new_token(token.ILLEGAL, l.ch)
+		}
 	}
 	l.read_char()
 	return tok
